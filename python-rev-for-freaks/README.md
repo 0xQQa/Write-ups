@@ -335,7 +335,7 @@ So it's high time to reverse the code!
 
 ## Reversed code
 
-In order to obtain the flag, I started by extracting the array from the character string that is expected - n_reversed. Then, I reconstructed the numbers that are encrypted with RSA - m_reserved. I skipped the implementation of recovering the private key, instead used the web services - reverse_rsa_pubkey and rsa_decrypt_helper. The last operation was to reverse the character encoding - prepare_input_reversed.
+In order to obtain the flag, I started by extracting the array from the character string that is expected - n_reversed. Then, I reconstructed the numbers that are encrypted with RSA - m_reserved. I wrote a inverse function  to the original lambda l - l_reversed. I skipped the implementation of recovering the private key, instead used the web services - reverse_rsa_pubkey and rsa_decrypt_helper. The last operation was to reverse the character encoding - prepare_input_reversed.
 
 ```python
 import ast
