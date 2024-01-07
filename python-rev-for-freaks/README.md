@@ -276,7 +276,7 @@ Let's try to simplify it a little more!
 
 Let's see the final form of the code, which performs the following steps:
 - encodes each 8 ASCI characters into 1 number.
-- encrypts the generated number using RSA (exp=42069, mod=2**59 - 1, thanks to crypto guys from the team!).
+- encrypts the generated number using RSA (exp=42069, mod=2**59 - 1, thanks to the crypto guys from the team!).
 - multiplies the encrypted number once by 6 times, once by 2 times and performs addition, xor and multiplication operations with constants each time. On the basis of these operations, it creates 2 lists, of which list #2 is written in reverse order.
 - prints the result list by filling padding on both sides with the '=' sign. 
 
