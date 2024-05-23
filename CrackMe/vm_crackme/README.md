@@ -1122,13 +1122,13 @@ After performing the above operations, we can go to IDA to complete the crackme 
 
 The first check is to iterate through the 46 characters and see if they are in the range "A-F" or "0-9". Let's see what's next.
 
-| ![Checking the value of the 8 letters of the password](Photos/CommonChcek.PNG) |
+| ![Checking the value of the 8 letters of the password](Photos/CommonCheck.PNG) |
 |:--:|
 | *Checking the value of the 8 letters of the password* |
 
 The application then converts the char from a character representation to a hexadecimal-compatible value (e.g., 'A' = 0x41 is modified to '\n' = 0xA) after which it is added to a registry-size buffer in reverse order. Therefore, the comparison value 0xF33746E6 is actually a notation of the string "6E64733F"!
 
-| ![Checking the value of the 8 letters of the password, with small modification](Photos/CommonChcekDec.PNG) |
+| ![Checking the value of the 8 letters of the password, with small modification](Photos/CommonCheckDec.PNG) |
 |:--:|
 | *Checking the value of the 8 letters of the password, with small modification* |
 
