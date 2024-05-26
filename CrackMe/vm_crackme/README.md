@@ -1120,7 +1120,7 @@ After performing the above operations, we can go to IDA to complete the crackme 
 |:--:|
 | *Devirtualized program, input validation* |
 
-The first check is to iterate through the 46 characters and see if they are in the range "A-F" or "0-9". Let's see what's next.
+The first check is to iterate through the 48 characters and see if they are in the range "A-F" or "0-9". Let's see what's next.
 
 | ![Checking the value of the 8 letters of the password](Photos/CommonCheck.PNG) |
 |:--:|
