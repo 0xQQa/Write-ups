@@ -1147,3 +1147,73 @@ So, it's high time to check the results of our analysis!
 | ![Flag validation in the original application](Photos/OriginalFlag.PNG) |
 |:--:|
 | *Flag validation in the original application* |
+
+# Bonus - llvm!
+
+Additionally, I decided to try my hand at devirtualization using the LLVM API. This involved modeling the virtual machine's handlers and producing .ll code based on the pseudo-assembly executed by the virtual machine itself.
+
+```
+void VmHandlers::opCmp(Instruction insn)
+{
+    auto reg_upper = this->getInsReg(insn, REG_UPPER);
+    auto reg_lower = this->getInsReg(insn, REG_LOWER);
+
+    llvm::Value* isLt = this->builder.CreateICmpULT(reg_upper, reg_lower);
+    llvm::Value* isGt = this->builder.CreateICmpUGT(reg_upper, reg_lower);
+
+    llvm::Value* cmpFlag = this->builder.getInt32(0);
+    cmpFlag = this->builder.CreateSelect(isLt, this->builder.getInt32(-1), cmpFlag);
+    cmpFlag = this->builder.CreateSelect(isGt, this->builder.getInt32(1),  cmpFlag);
+
+    auto reg_cmp_ptr = this->getReg(REG_CMP, true);
+    _LLVM_ALLIG_MEM_PAD_SIZE(this->builder.CreateStore(cmpFlag, reg_cmp_ptr));   
+}
+```
+
+| *Example handler - opcode similar to CMP* |
+
+The main task was to model two memory regions: one for the equivalent of a real stack and another for the buffer containing the password. This also involved implementing all handlers, making space for 5 registers and rewriting the disassembler script so it could produce code that would ultimately be generated as standard .ll output. (Shout out to: https://eversinc33.com/2026/05/07/llvm-devirtualizer)
+
+```
+ -O1 -mllvm -unroll-threshold=0 -mllvm -unroll-max-upperbound=0 
+```
+
+| *Optimization passes used in clang that gave the best result* |
+
+The optimization passes available in the LLVM API did not produce the fully expected result due to short loop unrolling during -O1. To address this, I used additional Clang compiler options, which — despite having nearly identical optimization passes — allowed me to enforce the preservation of small loops.
+
+| ![Main VM loop parsed using LLVM API](Photos/DispatcherLLVM.PNG) |
+|:--:|
+| *Main VM loop parsed using LLVM API* |
+
+```
+#include <stdio.h>
+#include <string.h>
+
+
+int dispatcher(char *input);
+
+int main(int argc, char **argv) 
+{
+    char input[64];
+
+    if (fgets(input, sizeof(input), stdin) == NULL) 
+    {
+        return 1;
+    }
+
+    input[strcspn(input, "\n")] = '\0';
+
+    int result = dispatcher(input);
+    if (!result)
+    {
+        printf("Nice!!! U got it!\n");
+    }
+
+    return 0;
+}
+```
+
+| *Original C source code serving as the body of the dispatcher, generated from the .ll output* |
+
+As we can observe, the decompiled code contains loops equivalent to those in the raw devirtualized code, which reveal fragments of the password. By combining them, we once again obtain the password already known from before.
